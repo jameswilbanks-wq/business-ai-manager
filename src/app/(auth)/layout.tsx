@@ -1,5 +1,10 @@
 import type { ReactNode } from "react";
 
+// See (app)/layout.tsx for why this matters — every page in this group
+// does a live session check and must never serve a cached result.
+export const dynamic = "force-dynamic";
+export const revalidate = 0;
+
 /**
  * Unauthenticated route group. No AppShell here (no sidebar/topbar).
  *

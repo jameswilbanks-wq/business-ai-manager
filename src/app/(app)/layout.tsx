@@ -7,6 +7,13 @@ import { getCurrentUser } from "@/features/identity/api/get-current-user";
 import { getUserBusinesses } from "@/features/identity/api/get-user-businesses";
 import { currentBusinessCookieName } from "@/lib/business-context";
 
+// Forces this entire route subtree to render fresh on every request.
+// Without this, Next.js can cache the "does this person have a business"
+// read from before one existed and keep serving that stale result even
+// after a business is created — surfacing as an infinite onboarding loop.
+export const dynamic = "force-dynamic";
+export const revalidate = 0;
+
 export default async function AuthenticatedLayout({ children }: { children: ReactNode }) {
   // Proxy/Middleware isn't available on this deployment target (see
   // src/middleware/README.md) — this check is the primary guard here, not
