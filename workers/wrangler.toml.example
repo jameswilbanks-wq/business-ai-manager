@@ -1,0 +1,13 @@
+# Copy to wrangler.toml and fill in real values once a Worker is implemented.
+# Never commit the real wrangler.toml if it contains account-specific secrets.
+
+name = "business-ai-manager-worker"
+main = "src/index.ts"
+compatibility_date = "2026-01-01"
+
+[vars]
+ENVIRONMENT = "development"
+
+# [[r2_buckets]]
+# binding = "BUCKET"
+# bucket_name = "business-ai-manager-media"
