@@ -10,6 +10,8 @@ import { Separator } from "@/components/ui/separator";
 import { useLocale } from "@/providers/locale-provider";
 import { MessageBubble } from "@/features/communication/components/message-bubble";
 import { AiDraftCard } from "@/features/communication/components/ai-draft-card";
+import { AiOrderSuggestionCard } from "@/features/communication/components/ai-order-suggestion-card";
+import { ConversationStatusControls } from "@/features/communication/components/conversation-status-controls";
 import { MessageComposer } from "@/features/communication/components/message-composer";
 import {
   ConversationPriorityBadge,
@@ -58,10 +60,24 @@ export function ConversationDetailPanel({ conversation }: { conversation: Conver
         )}
       </div>
 
+      <div className="flex items-center justify-between gap-2 border-b border-border px-4 py-2">
+        <div className="flex items-center gap-1.5 sm:hidden">
+          <ConversationStatusBadge status={conversation.status} />
+          <ConversationPriorityBadge priority={conversation.priority} />
+        </div>
+        <ConversationStatusControls conversationId={conversation.id} status={conversation.status} />
+      </div>
+
       {conversation.aiSummary && (
         <div className="flex items-start gap-2 border-b border-border bg-accent/40 px-4 py-2.5 text-xs">
           <Sparkles className="mt-0.5 size-3.5 shrink-0 text-primary" />
           <p className="text-accent-foreground">{conversation.aiSummary}</p>
+        </div>
+      )}
+
+      {conversation.linkedOrder && (
+        <div className="border-b border-border p-3">
+          <AiOrderSuggestionCard order={conversation.linkedOrder} conversationId={conversation.id} />
         </div>
       )}
 

@@ -58,6 +58,33 @@ export async function getConversationDetail(
 
   if (messagesError || !messages) return null;
 
+  // The conversation -> order bridge: if AI (or a human) already proposed
+  // an order from this conversation, surface it so the panel can render
+  // the suggestion card instead of the person having to go find it.
+  const { data: linkedOrderRow } = await supabase
+    .from("orders")
+    .select("id, order_number, status, ai_generated, total, currency, order_items ( product_name, quantity )")
+    .eq("conversation_id", conversationId)
+    .order("created_at", { ascending: false })
+    .limit(1)
+    .maybeSingle();
+
+  const linkedOrder = linkedOrderRow
+    ? {
+        id: linkedOrderRow.id,
+        orderNumber: linkedOrderRow.order_number,
+        status: linkedOrderRow.status,
+        aiGenerated: linkedOrderRow.ai_generated,
+        total: linkedOrderRow.total,
+        currency: linkedOrderRow.currency,
+        itemsSummary: (
+          (linkedOrderRow.order_items as unknown as { product_name: string; quantity: number }[]) ?? []
+        )
+          .map((i) => `${i.quantity}× ${i.product_name}`)
+          .join(", "),
+      }
+    : null;
+
   const customer = convo.customers as unknown as {
     id: string;
     name: string;
@@ -87,5 +114,6 @@ export async function getConversationDetail(
     lastMessageAt: convo.last_message_at,
     hasAiDraft: messages.some((m) => m.ai_status === "draft"),
     messages: messages.map(mapMessage),
+    linkedOrder,
   };
 }

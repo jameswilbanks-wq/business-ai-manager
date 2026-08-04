@@ -39,6 +39,17 @@ export interface Message {
   createdAt: string;
 }
 
+export interface LinkedOrderSummary {
+  id: string;
+  orderNumber: string;
+  status: string;
+  aiGenerated: boolean;
+  total: number;
+  currency: string;
+  itemsSummary: string;
+}
+
 export interface ConversationDetail extends ConversationListItem {
   messages: Message[];
+  linkedOrder: LinkedOrderSummary | null;
 }

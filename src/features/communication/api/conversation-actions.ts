@@ -82,3 +82,19 @@ export async function markConversationReadAction(conversationId: string) {
   await supabase.from("conversations").update({ unread_count: 0 }).eq("id", conversationId);
   revalidatePath("/communication");
 }
+
+/**
+ * The "mark as completed / needs follow-up" workflow. Conversation status
+ * was already in the schema (open/pending/resolved) but nothing let a
+ * person actually change it — this is that missing control.
+ */
+export async function updateConversationStatusAction(
+  conversationId: string,
+  status: "open" | "pending" | "resolved"
+) {
+  const supabase = await createClient();
+  await supabase.from("conversations").update({ status }).eq("id", conversationId);
+  revalidatePath(`/communication/${conversationId}`);
+  revalidatePath("/communication");
+  revalidatePath("/dashboard");
+}

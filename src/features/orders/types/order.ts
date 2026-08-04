@@ -41,5 +41,6 @@ export interface OrderDetail extends OrderListItem {
   paidAt: string | null;
   deliveredAt: string | null;
   conversationId: string | null;
+  aiGenerated: boolean;
   items: OrderItem[];
 }

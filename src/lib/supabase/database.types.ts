@@ -334,6 +334,7 @@ export interface Database {
           delivered_at: string | null;
           created_at: string;
           updated_at: string;
+          ai_generated: boolean;
         };
         Insert: {
           id?: string;
@@ -353,6 +354,7 @@ export interface Database {
           delivered_at?: string | null;
           created_at?: string;
           updated_at?: string;
+          ai_generated?: boolean;
         };
         Update: {
           id?: string;
@@ -372,6 +374,7 @@ export interface Database {
           delivered_at?: string | null;
           created_at?: string;
           updated_at?: string;
+          ai_generated?: boolean;
         };
         Relationships: [];
       };

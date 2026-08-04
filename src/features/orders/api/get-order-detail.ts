@@ -15,7 +15,7 @@ export async function getOrderDetail(orderId: string): Promise<OrderDetail | nul
       `
       id, order_number, status, currency, total, subtotal, discount, notes,
       delivery_address, delivery_date, paid_at, delivered_at, created_at,
-      conversation_id,
+      conversation_id, ai_generated,
       customers ( id, name, is_vip )
     `
     )
@@ -62,6 +62,7 @@ export async function getOrderDetail(orderId: string): Promise<OrderDetail | nul
     paidAt: order.paid_at,
     deliveredAt: order.delivered_at,
     conversationId: order.conversation_id,
+    aiGenerated: order.ai_generated,
     createdAt: order.created_at,
     customer: {
       id: customer?.id ?? "",

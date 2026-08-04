@@ -8,6 +8,7 @@ import { Separator } from "@/components/ui/separator";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import { OrderStatusBadge } from "@/features/orders/components/order-status-badge";
+import { OrderStatusActions } from "@/features/orders/components/order-status-actions";
 import { formatCurrency } from "@/features/orders/components/format-currency";
 import type { OrderDetail } from "@/features/orders/types/order";
 
@@ -32,6 +33,8 @@ export function OrderDetailView({ order }: { order: OrderDetail }) {
         </div>
         <OrderStatusBadge status={order.status} />
       </div>
+
+      <OrderStatusActions orderId={order.id} status={order.status} />
 
       <div className="grid gap-4 md:grid-cols-3">
         <div className="flex flex-col gap-4 md:col-span-2">
