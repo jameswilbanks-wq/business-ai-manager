@@ -1,6 +1,7 @@
 "use server";
 
 import { cookies } from "next/headers";
+import { redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
 import { currentBusinessCookieName } from "@/lib/business-context";
 import { createBusinessSchema } from "@/features/identity/validation/business-schemas";
@@ -46,7 +47,10 @@ export async function createBusinessAction(
     sameSite: "lax",
   });
 
-  return { status: "success", redirectTo: "/dashboard" };
+  // Server-side redirect rather than returning redirectTo for the client
+  // to act on: more robust than a client useEffect reacting to action
+  // state, and it's the framework's own supported pattern for this.
+  redirect("/dashboard");
 }
 
 /** Switches which business's data the shell displays. Called from the

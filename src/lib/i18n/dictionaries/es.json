@@ -105,7 +105,8 @@
     "business_name": "Nombre del negocio",
     "business_name_placeholder": "Ej. Tienda Don José",
     "submit": "Crear negocio",
-    "submitting": "Creando…"
+    "submitting": "Creando…",
+    "back_to_dashboard": "Volver al panel"
   },
   "business": {
     "switch_business": "Cambiar de negocio",

@@ -105,7 +105,8 @@
     "business_name": "Business name",
     "business_name_placeholder": "E.g. Don José's Shop",
     "submit": "Create business",
-    "submitting": "Creating…"
+    "submitting": "Creating…",
+    "back_to_dashboard": "Back to dashboard"
   },
   "business": {
     "switch_business": "Switch business",

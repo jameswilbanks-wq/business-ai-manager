@@ -1,10 +1,8 @@
 "use client";
 
-import * as React from "react";
 import { useActionState } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useRouter } from "next/navigation";
 import { createBusinessAction } from "@/features/identity/api/business-actions";
 import {
   createBusinessSchema,
@@ -18,7 +16,6 @@ import { FieldError } from "@/features/identity/components/field-error";
 
 export function CreateBusinessForm() {
   const { t } = useLocale();
-  const router = useRouter();
   const [state, formAction, isPending] = useActionState(createBusinessAction, null);
 
   const {
@@ -30,12 +27,9 @@ export function CreateBusinessForm() {
     mode: "onBlur",
   });
 
-  React.useEffect(() => {
-    if (state?.status === "success" && state.redirectTo) {
-      router.push(state.redirectTo);
-      router.refresh();
-    }
-  }, [state, router]);
+  // On success, createBusinessAction redirects server-side (throws before
+  // returning) — this component only ever sees a returned value on the
+  // error path, so there's no client-side success branch to handle here.
 
   return (
     <form action={formAction} onSubmit={() => trigger()} className="flex flex-col gap-4" noValidate>
