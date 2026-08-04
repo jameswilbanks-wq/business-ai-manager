@@ -3,7 +3,7 @@
 import * as React from "react";
 import { useActionState } from "react";
 import Link from "next/link";
-import { useForm } from "react-hook-form";
+import { useForm, Controller } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useRouter } from "next/navigation";
 import { registerAction } from "@/features/identity/api/auth-actions";
@@ -26,11 +26,13 @@ export function RegisterForm() {
 
   const {
     register,
+    control,
     formState: { errors },
     trigger,
   } = useForm<RegisterInput>({
     resolver: zodResolver(registerSchema),
     mode: "onBlur",
+    defaultValues: { acceptTerms: false as unknown as true },
   });
 
   React.useEffect(() => {
@@ -89,7 +91,19 @@ export function RegisterForm() {
 
       <div className="flex flex-col gap-1.5">
         <div className="flex items-start gap-2">
-          <Checkbox id="acceptTerms" name="acceptTerms" className="mt-0.5" />
+          <Controller
+            name="acceptTerms"
+            control={control}
+            render={({ field }) => (
+              <Checkbox
+                id="acceptTerms"
+                name="acceptTerms"
+                className="mt-0.5"
+                checked={field.value === true}
+                onCheckedChange={(checked) => field.onChange(checked === true)}
+              />
+            )}
+          />
           <Label htmlFor="acceptTerms" className="font-normal leading-snug">
             {t.auth.accept_terms}
           </Label>
