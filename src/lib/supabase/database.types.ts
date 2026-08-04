@@ -180,6 +180,141 @@ export interface Database {
         };
         Relationships: [];
       };
+      customers: {
+        Row: {
+          id: string;
+          business_id: string;
+          name: string;
+          phone: string | null;
+          email: string | null;
+          avatar_url: string | null;
+          tags: string[];
+          is_vip: boolean;
+          notes: string | null;
+          created_at: string;
+          updated_at: string;
+        };
+        Insert: {
+          id?: string;
+          business_id: string;
+          name: string;
+          phone?: string | null;
+          email?: string | null;
+          avatar_url?: string | null;
+          tags?: string[];
+          is_vip?: boolean;
+          notes?: string | null;
+          created_at?: string;
+          updated_at?: string;
+        };
+        Update: {
+          id?: string;
+          business_id?: string;
+          name?: string;
+          phone?: string | null;
+          email?: string | null;
+          avatar_url?: string | null;
+          tags?: string[];
+          is_vip?: boolean;
+          notes?: string | null;
+          created_at?: string;
+          updated_at?: string;
+        };
+        Relationships: [];
+      };
+      conversations: {
+        Row: {
+          id: string;
+          business_id: string;
+          customer_id: string;
+          channel: string;
+          status: string;
+          priority: string;
+          assigned_to_name: string | null;
+          tags: string[];
+          unread_count: number;
+          ai_summary: string | null;
+          sentiment: string | null;
+          last_message_at: string;
+          created_at: string;
+          updated_at: string;
+        };
+        Insert: {
+          id?: string;
+          business_id: string;
+          customer_id: string;
+          channel?: string;
+          status?: string;
+          priority?: string;
+          assigned_to_name?: string | null;
+          tags?: string[];
+          unread_count?: number;
+          ai_summary?: string | null;
+          sentiment?: string | null;
+          last_message_at?: string;
+          created_at?: string;
+          updated_at?: string;
+        };
+        Update: {
+          id?: string;
+          business_id?: string;
+          customer_id?: string;
+          channel?: string;
+          status?: string;
+          priority?: string;
+          assigned_to_name?: string | null;
+          tags?: string[];
+          unread_count?: number;
+          ai_summary?: string | null;
+          sentiment?: string | null;
+          last_message_at?: string;
+          created_at?: string;
+          updated_at?: string;
+        };
+        Relationships: [];
+      };
+      messages: {
+        Row: {
+          id: string;
+          conversation_id: string;
+          sender_type: string;
+          sender_name: string | null;
+          body: string;
+          media_url: string | null;
+          media_type: string | null;
+          is_internal_note: boolean;
+          ai_confidence: number | null;
+          ai_status: string | null;
+          created_at: string;
+        };
+        Insert: {
+          id?: string;
+          conversation_id: string;
+          sender_type: string;
+          sender_name?: string | null;
+          body: string;
+          media_url?: string | null;
+          media_type?: string | null;
+          is_internal_note?: boolean;
+          ai_confidence?: number | null;
+          ai_status?: string | null;
+          created_at?: string;
+        };
+        Update: {
+          id?: string;
+          conversation_id?: string;
+          sender_type?: string;
+          sender_name?: string | null;
+          body?: string;
+          media_url?: string | null;
+          media_type?: string | null;
+          is_internal_note?: boolean;
+          ai_confidence?: number | null;
+          ai_status?: string | null;
+          created_at?: string;
+        };
+        Relationships: [];
+      };
     };
     Views: Record<string, never>;
     Functions: {

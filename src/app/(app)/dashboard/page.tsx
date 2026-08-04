@@ -1,25 +1,22 @@
-"use client";
+import { getDashboardSummary } from "@/features/dashboard/api/get-dashboard-summary";
+import { getCurrentUser } from "@/features/identity/api/get-current-user";
+import { getCurrentBusiness } from "@/features/identity/api/get-current-business";
+import { DashboardView } from "@/features/dashboard/components/dashboard-view";
 
-import { Sparkles } from "lucide-react";
-import { EmptyState } from "@/components/shared/empty-state";
-import { useLocale } from "@/providers/locale-provider";
+export default async function DashboardPage() {
+  const [summary, user, currentBusiness] = await Promise.all([
+    getDashboardSummary(),
+    getCurrentUser(),
+    getCurrentBusiness(),
+  ]);
 
-export default function DashboardPage() {
-  const { t } = useLocale();
+  const userName = user?.profile?.displayName ?? user?.email?.split("@")[0] ?? "";
 
   return (
-    <div className="flex flex-col gap-6">
-      <div>
-        <h1 className="text-xl font-semibold tracking-tight">{t.dashboard.title}</h1>
-        <p className="text-sm text-muted-foreground">{t.dashboard.subtitle}</p>
-      </div>
-
-      <EmptyState
-        icon={<Sparkles />}
-        title={t.dashboard.empty_title}
-        description={t.dashboard.empty_description}
-        className="min-h-[50vh]"
-      />
-    </div>
+    <DashboardView
+      summary={summary}
+      userName={userName}
+      businessName={currentBusiness?.business.name ?? ""}
+    />
   );
 }
