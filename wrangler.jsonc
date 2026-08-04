@@ -10,5 +10,10 @@
   },
   "observability": {
     "enabled": true
+  },
+  "vars": {
+    "NEXT_PUBLIC_SUPABASE_URL": "https://bjletwdwttdhvnxgdttl.supabase.co",
+    "NEXT_PUBLIC_SUPABASE_ANON_KEY": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImJqbGV0d2R3dHRkaHZueGdkdHRsIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODU3ODYwMjMsImV4cCI6MjEwMTM2MjAyM30.za12cMIGV23Bp9uavXhv2x9_Y6ilF_8w_FLmM81h_jA",
+    "NEXT_PUBLIC_APP_URL": "https://business-ai-manager.james-wilbanks.workers.dev"
   }
 }
