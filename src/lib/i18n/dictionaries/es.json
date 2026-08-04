@@ -92,9 +92,24 @@
       "invalid_password": "La contraseña no cumple los requisitos.",
       "reset_link_expired": "Este enlace ya no es válido. Solicita uno nuevo.",
       "update_password_failed": "No pudimos actualizar tu contraseña. Intenta de nuevo.",
-      "unexpected": "Algo salió mal. Intenta de nuevo."
+      "unexpected": "Algo salió mal. Intenta de nuevo.",
+      "invalid_business_name": "Ingresa un nombre válido para tu negocio.",
+      "business_creation_failed": "No pudimos crear tu negocio. Intenta de nuevo."
     },
     "show_password": "Mostrar contraseña",
     "hide_password": "Ocultar contraseña"
+  },
+  "onboarding": {
+    "title": "Crea tu negocio",
+    "subtitle": "Empecemos por darle un nombre a tu negocio",
+    "business_name": "Nombre del negocio",
+    "business_name_placeholder": "Ej. Tienda Don José",
+    "submit": "Crear negocio",
+    "submitting": "Creando…"
+  },
+  "business": {
+    "switch_business": "Cambiar de negocio",
+    "add_business": "Agregar negocio",
+    "current_plan": "Plan actual"
   }
 }

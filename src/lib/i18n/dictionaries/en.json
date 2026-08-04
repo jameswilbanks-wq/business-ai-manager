@@ -92,9 +92,24 @@
       "invalid_password": "Password does not meet the requirements.",
       "reset_link_expired": "This link is no longer valid. Request a new one.",
       "update_password_failed": "We couldn't update your password. Please try again.",
-      "unexpected": "Something went wrong. Please try again."
+      "unexpected": "Something went wrong. Please try again.",
+      "invalid_business_name": "Enter a valid business name.",
+      "business_creation_failed": "We couldn't create your business. Please try again."
     },
     "show_password": "Show password",
     "hide_password": "Hide password"
+  },
+  "onboarding": {
+    "title": "Create your business",
+    "subtitle": "Let's start by giving your business a name",
+    "business_name": "Business name",
+    "business_name_placeholder": "E.g. Don José's Shop",
+    "submit": "Create business",
+    "submitting": "Creating…"
+  },
+  "business": {
+    "switch_business": "Switch business",
+    "add_business": "Add business",
+    "current_plan": "Current plan"
   }
 }

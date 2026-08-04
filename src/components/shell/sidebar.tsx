@@ -3,11 +3,12 @@
 import * as React from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { PanelLeftClose, PanelLeftOpen, Sparkles } from "lucide-react";
+import { PanelLeftClose, PanelLeftOpen } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { primaryNav, secondaryNav } from "@/components/shell/nav-config";
 import { useSidebar } from "@/components/shell/sidebar-context";
 import { useLocale } from "@/providers/locale-provider";
+import { BusinessSwitcher } from "@/components/shell/business-switcher";
 import {
   Tooltip,
   TooltipContent,
@@ -67,15 +68,8 @@ export function Sidebar() {
         collapsed ? "w-16" : "w-64"
       )}
     >
-      <div className={cn("flex h-14 items-center gap-2 px-4", collapsed && "justify-center px-0")}>
-        <div className="flex size-7 shrink-0 items-center justify-center rounded-md bg-primary text-primary-foreground">
-          <Sparkles className="size-4" />
-        </div>
-        {!collapsed && (
-          <span className="truncate text-sm font-semibold text-sidebar-foreground">
-            {t.app.name}
-          </span>
-        )}
+      <div className={cn("border-b border-sidebar-border", collapsed && "px-0")}>
+        <BusinessSwitcher collapsed={collapsed} />
       </div>
 
       <nav className="flex flex-1 flex-col gap-1 overflow-y-auto px-3 py-2">
