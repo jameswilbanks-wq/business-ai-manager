@@ -43,7 +43,7 @@ export function NeedsAttentionList({
             {conversations.map((c) => (
               <Link
                 key={c.id}
-                href={`/communication?id=${c.id}`}
+                href={`/communication/${c.id}`}
                 className="flex items-center gap-3 px-5 py-3 transition-colors hover:bg-accent/50"
               >
                 <Avatar className="size-8">

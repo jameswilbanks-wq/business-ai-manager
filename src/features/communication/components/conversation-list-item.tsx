@@ -33,7 +33,7 @@ export function ConversationListItemCard({
 
   return (
     <Link
-      href={`/communication?id=${conversation.id}`}
+      href={`/communication/${conversation.id}`}
       className={cn(
         "flex items-start gap-3 border-b border-border px-4 py-3 transition-colors hover:bg-accent/50",
         active && "bg-accent"

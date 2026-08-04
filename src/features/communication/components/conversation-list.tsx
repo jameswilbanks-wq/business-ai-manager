@@ -1,7 +1,6 @@
 "use client";
 
 import * as React from "react";
-import { useSearchParams } from "next/navigation";
 import { Input } from "@/components/ui/input";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { EmptyState } from "@/components/shared/empty-state";
@@ -23,7 +22,6 @@ export function ConversationList({
   className?: string;
 }) {
   const { locale } = useLocale();
-  const searchParams = useSearchParams();
   const [filter, setFilter] = React.useState<FilterKey>("all");
   const [query, setQuery] = React.useState("");
 
@@ -78,7 +76,7 @@ export function ConversationList({
             <ConversationListItemCard
               key={c.id}
               conversation={c}
-              active={c.id === (selectedId ?? searchParams.get("id"))}
+              active={c.id === selectedId}
               locale={locale}
             />
           ))
