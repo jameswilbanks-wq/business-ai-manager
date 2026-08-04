@@ -4,13 +4,13 @@ import * as React from "react";
 import { Input } from "@/components/ui/input";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { EmptyState } from "@/components/shared/empty-state";
-import { Search, Inbox } from "lucide-react";
+import { Search, Inbox, CheckCircle2 } from "lucide-react";
 import { useLocale } from "@/providers/locale-provider";
 import { ConversationListItemCard } from "@/features/communication/components/conversation-list-item";
 import type { ConversationListItem } from "@/features/communication/types/conversation";
 import { cn } from "@/lib/utils";
 
-type FilterKey = "all" | "unread" | "urgent" | "vip";
+type FilterKey = "all" | "unread" | "urgent" | "vip" | "completed";
 
 export function ConversationList({
   conversations,
@@ -26,6 +26,16 @@ export function ConversationList({
   const [query, setQuery] = React.useState("");
 
   const filtered = conversations.filter((c) => {
+    // "Completadas" is the only tab that shows resolved conversations —
+    // every other tab is reserved for things still needing a response,
+    // so a resolved conversation disappears from them the moment it's
+    // marked resolved.
+    if (filter === "completed") {
+      if (c.status !== "resolved") return false;
+    } else if (c.status === "resolved") {
+      return false;
+    }
+
     if (filter === "unread" && c.unreadCount === 0) return false;
     if (filter === "urgent" && c.priority !== "urgent") return false;
     if (filter === "vip" && !c.customer.isVip) return false;
@@ -59,6 +69,9 @@ export function ConversationList({
             <TabsTrigger value="vip" className="flex-1">
               VIP
             </TabsTrigger>
+            <TabsTrigger value="completed" className="flex-1">
+              Completadas
+            </TabsTrigger>
           </TabsList>
         </Tabs>
       </div>
@@ -66,9 +79,13 @@ export function ConversationList({
       <div className="flex-1 overflow-y-auto">
         {filtered.length === 0 ? (
           <EmptyState
-            icon={<Inbox />}
-            title="No hay conversaciones"
-            description="Ninguna conversación coincide con este filtro."
+            icon={filter === "completed" ? <CheckCircle2 /> : <Inbox />}
+            title={filter === "completed" ? "No hay conversaciones completadas" : "No hay conversaciones"}
+            description={
+              filter === "completed"
+                ? "Las conversaciones resueltas aparecerán aquí."
+                : "Ninguna conversación coincide con este filtro."
+            }
             className="mx-3 mt-4 border-none"
           />
         ) : (
@@ -78,6 +95,7 @@ export function ConversationList({
               conversation={c}
               active={c.id === selectedId}
               locale={locale}
+              showRestore={filter === "completed"}
             />
           ))
         )}
