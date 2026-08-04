@@ -315,6 +315,99 @@ export interface Database {
         };
         Relationships: [];
       };
+      orders: {
+        Row: {
+          id: string;
+          business_id: string;
+          customer_id: string;
+          conversation_id: string | null;
+          order_number: string;
+          status: string;
+          currency: string;
+          subtotal: number;
+          discount: number;
+          total: number;
+          notes: string | null;
+          delivery_address: string | null;
+          delivery_date: string | null;
+          paid_at: string | null;
+          delivered_at: string | null;
+          created_at: string;
+          updated_at: string;
+        };
+        Insert: {
+          id?: string;
+          business_id: string;
+          customer_id: string;
+          conversation_id?: string | null;
+          order_number: string;
+          status?: string;
+          currency?: string;
+          subtotal?: number;
+          discount?: number;
+          total?: number;
+          notes?: string | null;
+          delivery_address?: string | null;
+          delivery_date?: string | null;
+          paid_at?: string | null;
+          delivered_at?: string | null;
+          created_at?: string;
+          updated_at?: string;
+        };
+        Update: {
+          id?: string;
+          business_id?: string;
+          customer_id?: string;
+          conversation_id?: string | null;
+          order_number?: string;
+          status?: string;
+          currency?: string;
+          subtotal?: number;
+          discount?: number;
+          total?: number;
+          notes?: string | null;
+          delivery_address?: string | null;
+          delivery_date?: string | null;
+          paid_at?: string | null;
+          delivered_at?: string | null;
+          created_at?: string;
+          updated_at?: string;
+        };
+        Relationships: [];
+      };
+      order_items: {
+        Row: {
+          id: string;
+          order_id: string;
+          product_name: string;
+          description: string | null;
+          quantity: number;
+          unit_price: number;
+          line_total: number;
+          sort_order: number;
+        };
+        Insert: {
+          id?: string;
+          order_id: string;
+          product_name: string;
+          description?: string | null;
+          quantity?: number;
+          unit_price?: number;
+          line_total?: number;
+          sort_order?: number;
+        };
+        Update: {
+          id?: string;
+          order_id?: string;
+          product_name?: string;
+          description?: string | null;
+          quantity?: number;
+          unit_price?: number;
+          line_total?: number;
+          sort_order?: number;
+        };
+        Relationships: [];
+      };
     };
     Views: Record<string, never>;
     Functions: {
