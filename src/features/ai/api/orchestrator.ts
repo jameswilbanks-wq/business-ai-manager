@@ -39,7 +39,7 @@ export interface ReplyDraftError {
 export async function generateConversationReply(
   context: ReplyDraftContext
 ): Promise<ReplyDraftResult | ReplyDraftError> {
-  const client = getAnthropicClient();
+  const client = await getAnthropicClient();
   if (!client) {
     return { status: "error", message: "ai_not_configured" };
   }
