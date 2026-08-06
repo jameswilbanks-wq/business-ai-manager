@@ -2,6 +2,7 @@
 
 import * as React from "react";
 import Link from "next/link";
+import { toast } from "sonner";
 import { ArrowLeft, Phone, Sparkles } from "lucide-react";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
@@ -13,6 +14,7 @@ import { AiDraftCard } from "@/features/communication/components/ai-draft-card";
 import { AiOrderSuggestionCard } from "@/features/communication/components/ai-order-suggestion-card";
 import { ConversationStatusControls } from "@/features/communication/components/conversation-status-controls";
 import { MessageComposer } from "@/features/communication/components/message-composer";
+import { generateAiReplyAction } from "@/features/communication/api/conversation-actions";
 import {
   ConversationPriorityBadge,
   ConversationStatusBadge,
@@ -25,9 +27,23 @@ function initials(name: string) {
 
 export function ConversationDetailPanel({ conversation }: { conversation: ConversationDetail }) {
   const { locale } = useLocale();
+  const [isGenerating, startGenerating] = React.useTransition();
   const latestDraft = [...conversation.messages]
     .reverse()
     .find((m) => m.senderType === "ai" && m.aiStatus === "draft");
+
+  function generateReply() {
+    startGenerating(async () => {
+      const result = await generateAiReplyAction(conversation.id);
+      if (result.status === "error") {
+        toast.error(
+          result.message === "ai_not_configured"
+            ? "La IA en tiempo real no está configurada — falta la clave de API de Anthropic."
+            : "No se pudo generar una respuesta con IA. Intenta de nuevo."
+        );
+      }
+    });
+  }
 
   return (
     <div className="flex h-full flex-col">
@@ -89,13 +105,28 @@ export function ConversationDetailPanel({ conversation }: { conversation: Conver
           ))}
       </div>
 
-      {latestDraft && (
+      {latestDraft ? (
         <>
           <Separator />
           <div className="p-3">
             <AiDraftCard draft={latestDraft} />
           </div>
         </>
+      ) : (
+        conversation.status !== "resolved" && (
+          <div className="border-t border-border p-3">
+            <Button
+              variant="outline"
+              size="sm"
+              className="w-full"
+              disabled={isGenerating}
+              loading={isGenerating}
+              onClick={generateReply}
+            >
+              <Sparkles /> Generar respuesta con IA
+            </Button>
+          </div>
+        )
       )}
 
       <MessageComposer conversationId={conversation.id} />
