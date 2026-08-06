@@ -1,14 +1,20 @@
-"use client";
+import { getProducts } from "@/features/inventory/api/get-products";
+import { ProductsList } from "@/features/inventory/components/products-list";
 
-import { ModulePlaceholder } from "@/components/shared/module-placeholder";
-import { useLocale } from "@/providers/locale-provider";
+export const dynamic = "force-dynamic";
+export const revalidate = 0;
 
-export default function DomainPlaceholderPage() {
-  const { t } = useLocale();
+export default async function ProductsPage() {
+  const products = await getProducts();
   return (
-    <ModulePlaceholder
-      title={`${t.nav.products} — ${t.module.coming_soon_title}`}
-      description={t.module.coming_soon_description}
-    />
+    <div className="flex flex-col gap-4">
+      <div>
+        <h1 className="text-xl font-semibold tracking-tight">Productos</h1>
+        <p className="text-sm text-muted-foreground">
+          {products.length} producto{products.length === 1 ? "" : "s"} en el catálogo.
+        </p>
+      </div>
+      <ProductsList products={products} />
+    </div>
   );
 }

@@ -462,6 +462,75 @@ export interface Database {
         };
         Relationships: [];
       };
+      products: {
+        Row: {
+          id: string;
+          business_id: string;
+          name: string;
+          sku: string | null;
+          category: string | null;
+          description: string | null;
+          price: number;
+          currency: string;
+          is_active: boolean;
+          created_at: string;
+          updated_at: string;
+        };
+        Insert: {
+          id?: string;
+          business_id: string;
+          name: string;
+          sku?: string | null;
+          category?: string | null;
+          description?: string | null;
+          price?: number;
+          currency?: string;
+          is_active?: boolean;
+          created_at?: string;
+          updated_at?: string;
+        };
+        Update: {
+          id?: string;
+          business_id?: string;
+          name?: string;
+          sku?: string | null;
+          category?: string | null;
+          description?: string | null;
+          price?: number;
+          currency?: string;
+          is_active?: boolean;
+          created_at?: string;
+          updated_at?: string;
+        };
+        Relationships: [];
+      };
+      inventory_items: {
+        Row: {
+          id: string;
+          business_id: string;
+          product_id: string;
+          quantity_on_hand: number;
+          reorder_threshold: number;
+          updated_at: string;
+        };
+        Insert: {
+          id?: string;
+          business_id: string;
+          product_id: string;
+          quantity_on_hand?: number;
+          reorder_threshold?: number;
+          updated_at?: string;
+        };
+        Update: {
+          id?: string;
+          business_id?: string;
+          product_id?: string;
+          quantity_on_hand?: number;
+          reorder_threshold?: number;
+          updated_at?: string;
+        };
+        Relationships: [];
+      };
     };
     Views: Record<string, never>;
     Functions: {
