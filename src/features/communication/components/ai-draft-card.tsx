@@ -105,7 +105,7 @@ export function AiDraftCard({ draft }: { draft: Message }) {
                     toast.error(
                       result.message === "ai_not_configured"
                         ? "La IA en tiempo real no está configurada todavía — se aplicó una variación local."
-                        : "No se pudo generar una nueva respuesta con IA — se aplicó una variación local."
+                        : `No se pudo generar con IA — se aplicó una variación local.${result.detail ? " " + result.detail : ""}`
                     );
                   }
                 })

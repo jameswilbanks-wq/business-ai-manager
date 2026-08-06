@@ -1,4 +1,5 @@
 import "server-only";
+import Anthropic from "@anthropic-ai/sdk";
 import { getAnthropicClient, AI_MODEL } from "@/lib/ai/client";
 
 export interface ReplyDraftContext {
@@ -17,6 +18,7 @@ export interface ReplyDraftResult {
 export interface ReplyDraftError {
   status: "error";
   message: "ai_not_configured" | "ai_request_failed";
+  detail?: string;
 }
 
 /**
@@ -83,6 +85,12 @@ Redacta la siguiente respuesta del negocio para ${context.customerName}.`;
     return { status: "success", reply };
   } catch (error) {
     console.error("[ai/orchestrator] generateConversationReply failed:", error);
-    return { status: "error", message: "ai_request_failed" };
+    const detail =
+      error instanceof Anthropic.APIError
+        ? `${error.status}: ${error.message}`
+        : error instanceof Error
+          ? error.message
+          : String(error);
+    return { status: "error", message: "ai_request_failed", detail };
   }
 }

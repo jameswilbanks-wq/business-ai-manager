@@ -77,13 +77,13 @@ async function buildReplyContext(conversationId: string) {
  */
 export async function generateAiReplyAction(
   conversationId: string
-): Promise<{ status: "success" } | { status: "error"; message: string }> {
+): Promise<{ status: "success" } | { status: "error"; message: string; detail?: string }> {
   const context = await buildReplyContext(conversationId);
   if (!context) return { status: "error", message: "not_found" };
 
   const result = await generateConversationReply(context);
   if (result.status === "error") {
-    return { status: "error", message: result.message };
+    return { status: "error", message: result.message, detail: result.detail };
   }
 
   const supabase = await createClient();
@@ -103,7 +103,7 @@ export async function generateAiReplyAction(
 export async function regenerateAiDraftAction(
   messageId: string,
   conversationId: string
-): Promise<{ status: "success" } | { status: "error"; message: string }> {
+): Promise<{ status: "success" } | { status: "error"; message: string; detail?: string }> {
   const context = await buildReplyContext(conversationId);
   if (!context) return { status: "error", message: "not_found" };
 
@@ -135,7 +135,7 @@ export async function regenerateAiDraftAction(
       .eq("id", messageId);
   }
   revalidatePath(`/communication/${conversationId}`);
-  return { status: "error", message: result.message };
+  return { status: "error", message: result.message, detail: result.status === "error" ? result.detail : undefined };
 }
 
 /** Persists an edit made to an AI draft before approving it. */

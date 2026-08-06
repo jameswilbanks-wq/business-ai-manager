@@ -14,4 +14,4 @@ export function getAnthropicClient(): Anthropic | null {
   return new Anthropic({ apiKey: env.ANTHROPIC_API_KEY });
 }
 
-export const AI_MODEL = "claude-sonnet-4-6";
+export const AI_MODEL = "claude-sonnet-5";

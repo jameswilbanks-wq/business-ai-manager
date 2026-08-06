@@ -39,7 +39,7 @@ export function ConversationDetailPanel({ conversation }: { conversation: Conver
         toast.error(
           result.message === "ai_not_configured"
             ? "La IA en tiempo real no está configurada — falta la clave de API de Anthropic."
-            : "No se pudo generar una respuesta con IA. Intenta de nuevo."
+            : `No se pudo generar una respuesta con IA.${result.detail ? " " + result.detail : " Intenta de nuevo."}`
         );
       }
     });
