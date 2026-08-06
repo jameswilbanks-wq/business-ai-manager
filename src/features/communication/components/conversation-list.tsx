@@ -56,20 +56,20 @@ export function ConversationList({
           />
         </div>
         <Tabs value={filter} onValueChange={(v) => setFilter(v as FilterKey)}>
-          <TabsList className="w-full">
-            <TabsTrigger value="all" className="flex-1">
+          <TabsList className="w-full justify-start gap-0.5 overflow-x-auto scroll-px-1 [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
+            <TabsTrigger value="all" className="shrink-0">
               Todas
             </TabsTrigger>
-            <TabsTrigger value="unread" className="flex-1">
+            <TabsTrigger value="unread" className="shrink-0">
               No leídas
             </TabsTrigger>
-            <TabsTrigger value="urgent" className="flex-1">
+            <TabsTrigger value="urgent" className="shrink-0">
               Urgentes
             </TabsTrigger>
-            <TabsTrigger value="vip" className="flex-1">
+            <TabsTrigger value="vip" className="shrink-0">
               VIP
             </TabsTrigger>
-            <TabsTrigger value="completed" className="flex-1">
+            <TabsTrigger value="completed" className="shrink-0">
               Completadas
             </TabsTrigger>
           </TabsList>
