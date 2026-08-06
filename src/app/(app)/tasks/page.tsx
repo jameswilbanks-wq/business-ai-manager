@@ -1,14 +1,20 @@
-"use client";
+import { getTasks } from "@/features/tasks/api/get-tasks";
+import { TasksList } from "@/features/tasks/components/tasks-list";
 
-import { ModulePlaceholder } from "@/components/shared/module-placeholder";
-import { useLocale } from "@/providers/locale-provider";
+export const dynamic = "force-dynamic";
+export const revalidate = 0;
 
-export default function DomainPlaceholderPage() {
-  const { t } = useLocale();
+export default async function TasksPage() {
+  const tasks = await getTasks();
   return (
-    <ModulePlaceholder
-      title={`${t.nav.tasks} — ${t.module.coming_soon_title}`}
-      description={t.module.coming_soon_description}
-    />
+    <div className="flex flex-col gap-4">
+      <div>
+        <h1 className="text-xl font-semibold tracking-tight">Tareas</h1>
+        <p className="text-sm text-muted-foreground">
+          El trabajo operativo de tu negocio, en un solo lugar.
+        </p>
+      </div>
+      <TasksList tasks={tasks} />
+    </div>
   );
 }

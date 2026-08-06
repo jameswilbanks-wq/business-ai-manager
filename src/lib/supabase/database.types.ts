@@ -411,6 +411,57 @@ export interface Database {
         };
         Relationships: [];
       };
+      tasks: {
+        Row: {
+          id: string;
+          business_id: string;
+          title: string;
+          description: string | null;
+          status: string;
+          priority: string;
+          due_date: string | null;
+          assigned_to_name: string | null;
+          related_type: string | null;
+          related_id: string | null;
+          is_ai_suggested: boolean;
+          completed_at: string | null;
+          created_at: string;
+          updated_at: string;
+        };
+        Insert: {
+          id?: string;
+          business_id: string;
+          title: string;
+          description?: string | null;
+          status?: string;
+          priority?: string;
+          due_date?: string | null;
+          assigned_to_name?: string | null;
+          related_type?: string | null;
+          related_id?: string | null;
+          is_ai_suggested?: boolean;
+          completed_at?: string | null;
+          created_at?: string;
+          updated_at?: string;
+        };
+        Update: {
+          id?: string;
+          business_id?: string;
+          title?: string;
+          description?: string | null;
+          status?: string;
+          priority?: string;
+          due_date?: string | null;
+          assigned_to_name?: string | null;
+          related_type?: string | null;
+          related_id?: string | null;
+          is_ai_suggested?: boolean;
+          completed_at?: string | null;
+          created_at?: string;
+          updated_at?: string;
+        };
+        Relationships: [];
+      };
     };
     Views: Record<string, never>;
     Functions: {
