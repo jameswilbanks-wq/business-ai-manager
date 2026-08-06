@@ -531,6 +531,51 @@ export interface Database {
         };
         Relationships: [];
       };
+      suppliers: {
+        Row: {
+          id: string;
+          business_id: string;
+          name: string;
+          contact_name: string | null;
+          phone: string | null;
+          email: string | null;
+          lead_time_days: number | null;
+          notes: string | null;
+          created_at: string;
+          updated_at: string;
+        };
+        Insert: {
+          id?: string;
+          business_id: string;
+          name: string;
+          contact_name?: string | null;
+          phone?: string | null;
+          email?: string | null;
+          lead_time_days?: number | null;
+          notes?: string | null;
+          created_at?: string;
+          updated_at?: string;
+        };
+        Update: {
+          id?: string;
+          business_id?: string;
+          name?: string;
+          contact_name?: string | null;
+          phone?: string | null;
+          email?: string | null;
+          lead_time_days?: number | null;
+          notes?: string | null;
+          created_at?: string;
+          updated_at?: string;
+        };
+        Relationships: [];
+      };
+      supplier_products: {
+        Row: { supplier_id: string; product_id: string };
+        Insert: { supplier_id: string; product_id: string };
+        Update: { supplier_id?: string; product_id?: string };
+        Relationships: [];
+      };
     };
     Views: Record<string, never>;
     Functions: {

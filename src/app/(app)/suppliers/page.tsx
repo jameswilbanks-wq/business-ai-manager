@@ -1,14 +1,20 @@
-"use client";
+import { getSuppliers } from "@/features/suppliers/api/get-suppliers";
+import { SuppliersList } from "@/features/suppliers/components/suppliers-list";
 
-import { ModulePlaceholder } from "@/components/shared/module-placeholder";
-import { useLocale } from "@/providers/locale-provider";
+export const dynamic = "force-dynamic";
+export const revalidate = 0;
 
-export default function DomainPlaceholderPage() {
-  const { t } = useLocale();
+export default async function SuppliersPage() {
+  const suppliers = await getSuppliers();
   return (
-    <ModulePlaceholder
-      title={`${t.nav.suppliers} — ${t.module.coming_soon_title}`}
-      description={t.module.coming_soon_description}
-    />
+    <div className="flex flex-col gap-4">
+      <div>
+        <h1 className="text-xl font-semibold tracking-tight">Proveedores</h1>
+        <p className="text-sm text-muted-foreground">
+          {suppliers.length} proveedor{suppliers.length === 1 ? "" : "es"} registrado{suppliers.length === 1 ? "" : "s"}.
+        </p>
+      </div>
+      <SuppliersList suppliers={suppliers} />
+    </div>
   );
 }
