@@ -1,14 +1,20 @@
-"use client";
+import { getCustomers } from "@/features/customers/api/get-customers";
+import { CustomersList } from "@/features/customers/components/customers-list";
 
-import { ModulePlaceholder } from "@/components/shared/module-placeholder";
-import { useLocale } from "@/providers/locale-provider";
+export const dynamic = "force-dynamic";
+export const revalidate = 0;
 
-export default function DomainPlaceholderPage() {
-  const { t } = useLocale();
+export default async function CustomersPage() {
+  const customers = await getCustomers();
   return (
-    <ModulePlaceholder
-      title={`${t.nav.customers} — ${t.module.coming_soon_title}`}
-      description={t.module.coming_soon_description}
-    />
+    <div className="flex flex-col gap-4">
+      <div>
+        <h1 className="text-xl font-semibold tracking-tight">Clientes</h1>
+        <p className="text-sm text-muted-foreground">
+          {customers.length} cliente{customers.length === 1 ? "" : "s"} en total.
+        </p>
+      </div>
+      <CustomersList customers={customers} />
+    </div>
   );
 }
