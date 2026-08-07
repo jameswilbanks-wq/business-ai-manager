@@ -5,15 +5,72 @@ import { createClient } from "@/lib/supabase/server";
 import { getCurrentBusiness } from "@/features/identity/api/get-current-business";
 import { getCurrentUser } from "@/features/identity/api/get-current-user";
 import { generateConversationReply, extractOrderFromConversation } from "@/features/ai/api/orchestrator";
+import { sendWhatsAppMessage } from "@/lib/whatsapp/twilio-client";
 
 /**
- * Approves an AI-drafted reply: marks it approved so it reads as the sent
- * response. Real "actually deliver via WhatsApp" wiring belongs to the
- * WhatsApp Integration milestone — this operates on our own record only.
+ * If this conversation's channel is a connected WhatsApp number, actually
+ * deliver the message via Twilio — not just store it locally. Best-effort:
+ * a delivery failure is logged but never blocks saving the message itself,
+ * since losing the local record because an external API call failed would
+ * be worse than the reverse.
+ */
+async function deliverOutboundMessage(conversationId: string, body: string): Promise<void> {
+  const supabase = await createClient();
+  const currentBusiness = await getCurrentBusiness();
+  if (!currentBusiness) return;
+
+  const { data: convo } = await supabase
+    .from("conversations")
+    .select("channel, customers ( phone )")
+    .eq("id", conversationId)
+    .maybeSingle();
+
+  if (!convo || convo.channel !== "whatsapp") return;
+  const customerPhone = (convo.customers as unknown as { phone: string | null } | null)?.phone;
+  if (!customerPhone) return;
+
+  const { data: channel } = await supabase
+    .from("communication_channels")
+    .select("config")
+    .eq("business_id", currentBusiness.business.id)
+    .eq("channel_type", "whatsapp")
+    .eq("status", "connected")
+    .maybeSingle();
+
+  const config = channel?.config as
+    | { accountSid?: string; authToken?: string; whatsappNumber?: string }
+    | undefined;
+  if (!config?.accountSid || !config.authToken || !config.whatsappNumber) return;
+
+  const result = await sendWhatsAppMessage(
+    { accountSid: config.accountSid, authToken: config.authToken, whatsappNumber: config.whatsappNumber },
+    customerPhone,
+    body
+  );
+
+  if (!result.sent) {
+    console.error(`[conversation-actions] WhatsApp delivery failed: ${result.error}`);
+  }
+}
+
+/**
+ * Approves an AI-drafted reply: marks it approved and, if this
+ * conversation is on a connected WhatsApp channel, actually sends it.
  */
 export async function approveAiDraftAction(messageId: string, conversationId: string) {
   const supabase = await createClient();
+  const { data: message } = await supabase
+    .from("messages")
+    .select("body")
+    .eq("id", messageId)
+    .maybeSingle();
+
   await supabase.from("messages").update({ ai_status: "approved" }).eq("id", messageId);
+
+  if (message) {
+    await deliverOutboundMessage(conversationId, message.body);
+  }
+
   revalidatePath(`/communication/${conversationId}`);
 }
 
@@ -165,6 +222,8 @@ export async function sendMessageAction(conversationId: string, body: string) {
     .from("conversations")
     .update({ last_message_at: new Date().toISOString() })
     .eq("id", conversationId);
+
+  await deliverOutboundMessage(conversationId, body.trim());
 
   revalidatePath(`/communication/${conversationId}`);
   revalidatePath("/communication");

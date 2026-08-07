@@ -4,10 +4,13 @@ import { getCurrentBusiness } from "@/features/identity/api/get-current-business
 import { getBusinessMembers } from "@/features/settings/api/get-business-members";
 import { getPendingInvitations } from "@/features/settings/api/get-invitations";
 import { getSystemRoles } from "@/features/settings/api/get-roles";
+import { getCommunicationChannels, getAiSettings } from "@/features/settings/api/get-channels";
 import { BusinessProfileForm } from "@/features/settings/components/business-profile-form";
 import { TeamMembersList } from "@/features/settings/components/team-members-list";
 import { PendingInvitationsList } from "@/features/settings/components/pending-invitations-list";
 import { InviteTeamForm } from "@/features/settings/components/invite-team-form";
+import { CommunicationChannelsSection } from "@/features/settings/components/communication-channels-section";
+import { AiGatekeeperSettings } from "@/features/settings/components/ai-gatekeeper-settings";
 
 export const dynamic = "force-dynamic";
 export const revalidate = 0;
@@ -16,10 +19,12 @@ export default async function SettingsPage() {
   const currentBusiness = await getCurrentBusiness();
   if (!currentBusiness) redirect("/onboarding");
 
-  const [members, invitations, roles] = await Promise.all([
+  const [members, invitations, roles, channels, aiSettings] = await Promise.all([
     getBusinessMembers(),
     getPendingInvitations(),
     getSystemRoles(),
+    getCommunicationChannels(),
+    getAiSettings(),
   ]);
 
   return (
@@ -37,6 +42,24 @@ export default async function SettingsPage() {
         </CardHeader>
         <CardContent>
           <BusinessProfileForm business={currentBusiness.business} />
+        </CardContent>
+      </Card>
+
+      <Card>
+        <CardHeader>
+          <CardTitle>Canales de comunicación</CardTitle>
+        </CardHeader>
+        <CardContent className="p-0">
+          <CommunicationChannelsSection channels={channels} />
+        </CardContent>
+      </Card>
+
+      <Card>
+        <CardHeader>
+          <CardTitle>Filtro de mensajes con IA</CardTitle>
+        </CardHeader>
+        <CardContent>
+          <AiGatekeeperSettings settings={aiSettings} />
         </CardContent>
       </Card>
 

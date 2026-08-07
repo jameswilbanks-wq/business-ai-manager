@@ -99,7 +99,10 @@
       "update_failed": "No se pudo guardar. Verifica que tengas permisos de administrador.",
       "invalid_currency": "Usa un código de moneda de 3 letras (ej. COP).",
       "invalid_invite": "Ingresa un correo y rol válidos.",
-      "invite_failed": "No se pudo enviar la invitación."
+      "invite_failed": "No se pudo enviar la invitación.",
+      "invalid_channel_config": "Completa todos los campos de conexión.",
+      "twilio_verification_failed": "No pudimos verificar esas credenciales con Twilio. Revísalas e intenta de nuevo.",
+      "channel_save_failed": "No se pudo guardar la conexión."
     },
     "show_password": "Mostrar contraseña",
     "hide_password": "Ocultar contraseña"

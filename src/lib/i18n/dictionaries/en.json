@@ -99,7 +99,10 @@
       "update_failed": "Couldn't save. Check that you have administrator permissions.",
       "invalid_currency": "Use a 3-letter currency code (e.g. COP).",
       "invalid_invite": "Enter a valid email and role.",
-      "invite_failed": "Couldn't send the invitation."
+      "invite_failed": "Couldn't send the invitation.",
+      "invalid_channel_config": "Fill in all connection fields.",
+      "twilio_verification_failed": "We couldn't verify those credentials with Twilio. Check them and try again.",
+      "channel_save_failed": "Couldn't save the connection."
     },
     "show_password": "Show password",
     "hide_password": "Hide password"

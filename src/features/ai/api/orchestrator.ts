@@ -254,3 +254,80 @@ ${transcript}`;
     return { status: "error", message: "ai_request_failed", detail };
   }
 }
+
+// ============================================================================
+// AI Gatekeeper — classifies an inbound message as business-related or not
+// before it's allowed into the inbox. Only meaningful once a real channel
+// is sending real inbound traffic through the webhook; this is where that
+// classification actually happens.
+// ============================================================================
+
+export interface GatekeeperResult {
+  status: "success";
+  isBusinessRelated: boolean;
+  reasoning: string;
+}
+
+export async function classifyIncomingMessage(params: {
+  businessName: string;
+  messageBody: string;
+  isKnownCustomer: boolean;
+  customInstructions: string | null;
+}): Promise<GatekeeperResult | ReplyDraftError> {
+  const client = await getAnthropicClient();
+  if (!client) {
+    return { status: "error", message: "ai_not_configured" };
+  }
+
+  const systemPrompt = `Eres el filtro de mensajes entrantes de "${params.businessName}", un negocio que recibe mensajes de WhatsApp.
+
+Tu única tarea es decidir si un mensaje entrante está relacionado con el negocio (pedidos, preguntas de clientes, proveedores, logística) o es personal/spam/irrelevante (mensajes personales del dueño, publicidad no solicitada, cadenas, etc.).${
+    params.customInstructions ? `\n\nInstrucciones adicionales del negocio: ${params.customInstructions}` : ""
+  }
+
+Responde ÚNICAMENTE con la herramienta classify_message.`;
+
+  try {
+    const response = await client.messages.create({
+      model: AI_MODEL,
+      max_tokens: 200,
+      system: systemPrompt,
+      messages: [
+        {
+          role: "user",
+          content: `Remitente conocido como cliente: ${params.isKnownCustomer ? "sí" : "no"}\nMensaje: "${params.messageBody}"`,
+        },
+      ],
+      tools: [
+        {
+          name: "classify_message",
+          description: "Clasifica si el mensaje está relacionado con el negocio.",
+          input_schema: {
+            type: "object",
+            properties: {
+              is_business_related: { type: "boolean" },
+              reasoning: { type: "string" },
+            },
+            required: ["is_business_related", "reasoning"],
+          },
+        },
+      ],
+      tool_choice: { type: "tool", name: "classify_message" },
+    });
+
+    const toolUse = response.content.find((block) => block.type === "tool_use");
+    if (!toolUse || toolUse.type !== "tool_use") {
+      return { status: "error", message: "ai_request_failed" };
+    }
+
+    const input = toolUse.input as { is_business_related: boolean; reasoning: string };
+    return {
+      status: "success",
+      isBusinessRelated: input.is_business_related,
+      reasoning: input.reasoning,
+    };
+  } catch (error) {
+    console.error("[ai/orchestrator] classifyIncomingMessage failed:", error);
+    return { status: "error", message: "ai_request_failed" };
+  }
+}
