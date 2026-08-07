@@ -576,6 +576,105 @@ export interface Database {
         Update: { supplier_id?: string; product_id?: string };
         Relationships: [];
       };
+      invitations: {
+        Row: {
+          id: string;
+          business_id: string;
+          email: string;
+          role_id: string;
+          invited_by: string | null;
+          token: string;
+          status: string;
+          expires_at: string;
+          accepted_at: string | null;
+          created_at: string;
+        };
+        Insert: {
+          id?: string;
+          business_id: string;
+          email: string;
+          role_id: string;
+          invited_by?: string | null;
+          token?: string;
+          status?: string;
+          expires_at?: string;
+          accepted_at?: string | null;
+          created_at?: string;
+        };
+        Update: {
+          id?: string;
+          business_id?: string;
+          email?: string;
+          role_id?: string;
+          invited_by?: string | null;
+          token?: string;
+          status?: string;
+          expires_at?: string;
+          accepted_at?: string | null;
+          created_at?: string;
+        };
+        Relationships: [];
+      };
+      communication_channels: {
+        Row: {
+          id: string;
+          business_id: string;
+          channel_type: string;
+          label: string;
+          identifier: string | null;
+          status: string;
+          ai_gatekeeper_enabled: boolean;
+          config: Record<string, unknown>;
+          created_at: string;
+          updated_at: string;
+        };
+        Insert: {
+          id?: string;
+          business_id: string;
+          channel_type: string;
+          label: string;
+          identifier?: string | null;
+          status?: string;
+          ai_gatekeeper_enabled?: boolean;
+          config?: Record<string, unknown>;
+          created_at?: string;
+          updated_at?: string;
+        };
+        Update: {
+          id?: string;
+          business_id?: string;
+          channel_type?: string;
+          label?: string;
+          identifier?: string | null;
+          status?: string;
+          ai_gatekeeper_enabled?: boolean;
+          config?: Record<string, unknown>;
+          created_at?: string;
+          updated_at?: string;
+        };
+        Relationships: [];
+      };
+      business_ai_settings: {
+        Row: {
+          business_id: string;
+          gatekeeper_enabled: boolean;
+          gatekeeper_instructions: string | null;
+          updated_at: string;
+        };
+        Insert: {
+          business_id: string;
+          gatekeeper_enabled?: boolean;
+          gatekeeper_instructions?: string | null;
+          updated_at?: string;
+        };
+        Update: {
+          business_id?: string;
+          gatekeeper_enabled?: boolean;
+          gatekeeper_instructions?: string | null;
+          updated_at?: string;
+        };
+        Relationships: [];
+      };
     };
     Views: Record<string, never>;
     Functions: {
@@ -600,6 +699,20 @@ export interface Database {
           created_at: string;
           updated_at: string;
         };
+      };
+      get_invitation_by_token: {
+        Args: { invite_token: string };
+        Returns: {
+          business_name: string;
+          role_name: string;
+          email: string;
+          status: string;
+          expires_at: string;
+        }[];
+      };
+      accept_invitation: {
+        Args: { invite_token: string };
+        Returns: string;
       };
     };
   };

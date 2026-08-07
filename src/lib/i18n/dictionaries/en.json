@@ -97,7 +97,9 @@
       "business_creation_failed": "We couldn't create your business. Please try again.",
       "invalid_business_profile": "Please check the business details.",
       "update_failed": "Couldn't save. Check that you have administrator permissions.",
-      "invalid_currency": "Use a 3-letter currency code (e.g. COP)."
+      "invalid_currency": "Use a 3-letter currency code (e.g. COP).",
+      "invalid_invite": "Enter a valid email and role.",
+      "invite_failed": "Couldn't send the invitation."
     },
     "show_password": "Show password",
     "hide_password": "Hide password"

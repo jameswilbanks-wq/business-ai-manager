@@ -38,6 +38,7 @@ const serverSchema = clientSchema.extend({
   CLOUDFLARE_R2_BUCKET: optionalString(),
   WHATSAPP_BUSINESS_TOKEN: optionalString(),
   WHATSAPP_WEBHOOK_VERIFY_TOKEN: optionalString(),
+  RESEND_API_KEY: optionalString(),
 });
 
 export type ClientEnv = z.infer<typeof clientSchema>;
