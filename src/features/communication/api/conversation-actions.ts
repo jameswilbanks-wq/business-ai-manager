@@ -4,7 +4,7 @@ import { revalidatePath } from "next/cache";
 import { createClient } from "@/lib/supabase/server";
 import { getCurrentBusiness } from "@/features/identity/api/get-current-business";
 import { getCurrentUser } from "@/features/identity/api/get-current-user";
-import { generateConversationReply } from "@/features/ai/api/orchestrator";
+import { generateConversationReply, extractOrderFromConversation } from "@/features/ai/api/orchestrator";
 
 /**
  * Approves an AI-drafted reply: marks it approved so it reads as the sent
@@ -190,4 +190,101 @@ export async function updateConversationStatusAction(
   revalidatePath(`/communication/${conversationId}`);
   revalidatePath("/communication");
   revalidatePath("/dashboard");
+}
+
+/**
+ * Real AI order extraction — "AI should try to create it and then the
+ * user approves or modifies or follows up or cancels." Replaces the
+ * seeded ai_generated draft orders with a genuine analysis of the
+ * conversation, grounded in the actual product catalog so it can't
+ * hallucinate prices for real products (it can still propose a custom
+ * item, but must say so rather than inventing a number).
+ *
+ * Only creates an order row when the model genuinely finds a purchase
+ * intent — a "just answering a question" conversation correctly produces
+ * no order, which is itself useful information, not a failure.
+ */
+export async function generateAiOrderSuggestionAction(
+  conversationId: string
+): Promise<
+  | { status: "success"; orderId: string }
+  | { status: "no_opportunity"; reasoning: string }
+  | { status: "error"; message: string; detail?: string }
+> {
+  const context = await buildReplyContext(conversationId);
+  if (!context) return { status: "error", message: "not_found" };
+
+  const currentBusiness = await getCurrentBusiness();
+  const user = await getCurrentUser();
+  if (!currentBusiness || !user) return { status: "error", message: "not_found" };
+
+  const supabase = await createClient();
+  const { data: products } = await supabase
+    .from("products")
+    .select("name, price, category")
+    .eq("business_id", currentBusiness.business.id)
+    .eq("is_active", true);
+
+  const result = await extractOrderFromConversation({
+    ...context,
+    catalog: (products ?? []).map((p) => ({ name: p.name, price: p.price, category: p.category })),
+  });
+
+  if (result.status === "error") {
+    return { status: "error", message: result.message, detail: result.detail };
+  }
+
+  if (!result.hasOrderOpportunity || result.lineItems.length === 0) {
+    return { status: "no_opportunity", reasoning: result.reasoning };
+  }
+
+  const { data: convo } = await supabase
+    .from("conversations")
+    .select("customer_id")
+    .eq("id", conversationId)
+    .maybeSingle();
+  if (!convo) return { status: "error", message: "not_found" };
+
+  const subtotal = result.lineItems.reduce(
+    (sum, li) => sum + (li.estimatedUnitPrice ?? 0) * li.quantity,
+    0
+  );
+  const orderNumber = `ORD-AI-${Date.now().toString(36).toUpperCase()}`;
+
+  const { data: order, error: orderError } = await supabase
+    .from("orders")
+    .insert({
+      business_id: currentBusiness.business.id,
+      customer_id: convo.customer_id,
+      conversation_id: conversationId,
+      order_number: orderNumber,
+      status: "draft",
+      subtotal,
+      total: subtotal,
+      notes: result.notes ?? result.reasoning,
+      ai_generated: true,
+    })
+    .select("id")
+    .single();
+
+  if (orderError || !order) {
+    return { status: "error", message: "order_creation_failed" };
+  }
+
+  await supabase.from("order_items").insert(
+    result.lineItems.map((li, idx) => ({
+      order_id: order.id,
+      product_name: li.matchedCatalogItem
+        ? li.productName
+        : `${li.productName} (personalizado — sin precio confirmado)`,
+      quantity: li.quantity,
+      unit_price: li.estimatedUnitPrice ?? 0,
+      line_total: (li.estimatedUnitPrice ?? 0) * li.quantity,
+      sort_order: idx,
+    }))
+  );
+
+  revalidatePath(`/communication/${conversationId}`);
+  revalidatePath("/orders");
+  return { status: "success", orderId: order.id };
 }

@@ -2,8 +2,9 @@
 
 import * as React from "react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { toast } from "sonner";
-import { ArrowLeft, Phone, Sparkles } from "lucide-react";
+import { ArrowLeft, Package, Phone, Sparkles } from "lucide-react";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -14,7 +15,10 @@ import { AiDraftCard } from "@/features/communication/components/ai-draft-card";
 import { AiOrderSuggestionCard } from "@/features/communication/components/ai-order-suggestion-card";
 import { ConversationStatusControls } from "@/features/communication/components/conversation-status-controls";
 import { MessageComposer } from "@/features/communication/components/message-composer";
-import { generateAiReplyAction } from "@/features/communication/api/conversation-actions";
+import {
+  generateAiReplyAction,
+  generateAiOrderSuggestionAction,
+} from "@/features/communication/api/conversation-actions";
 import {
   ConversationPriorityBadge,
   ConversationStatusBadge,
@@ -27,7 +31,9 @@ function initials(name: string) {
 
 export function ConversationDetailPanel({ conversation }: { conversation: ConversationDetail }) {
   const { locale } = useLocale();
+  const router = useRouter();
   const [isGenerating, startGenerating] = React.useTransition();
+  const [isExtractingOrder, startExtractingOrder] = React.useTransition();
   const latestDraft = [...conversation.messages]
     .reverse()
     .find((m) => m.senderType === "ai" && m.aiStatus === "draft");
@@ -40,6 +46,24 @@ export function ConversationDetailPanel({ conversation }: { conversation: Conver
           result.message === "ai_not_configured"
             ? "La IA en tiempo real no está configurada — falta la clave de API de Anthropic."
             : `No se pudo generar una respuesta con IA.${result.detail ? " " + result.detail : " Intenta de nuevo."}`
+        );
+      }
+    });
+  }
+
+  function generateOrderSuggestion() {
+    startExtractingOrder(async () => {
+      const result = await generateAiOrderSuggestionAction(conversation.id);
+      if (result.status === "success") {
+        toast.success("IA propuso un pedido a partir de esta conversación.");
+        router.refresh();
+      } else if (result.status === "no_opportunity") {
+        toast.info(`IA no encontró una oportunidad de pedido clara: ${result.reasoning}`);
+      } else {
+        toast.error(
+          result.message === "ai_not_configured"
+            ? "La IA en tiempo real no está configurada — falta la clave de API de Anthropic."
+            : `No se pudo analizar la conversación.${result.detail ? " " + result.detail : ""}`
         );
       }
     });
@@ -91,9 +115,22 @@ export function ConversationDetailPanel({ conversation }: { conversation: Conver
         </div>
       )}
 
-      {conversation.linkedOrder && (
+      {conversation.linkedOrder ? (
         <div className="border-b border-border p-3">
           <AiOrderSuggestionCard order={conversation.linkedOrder} conversationId={conversation.id} />
+        </div>
+      ) : (
+        <div className="border-b border-border p-3">
+          <Button
+            variant="outline"
+            size="sm"
+            className="w-full"
+            disabled={isExtractingOrder}
+            loading={isExtractingOrder}
+            onClick={generateOrderSuggestion}
+          >
+            <Package /> Analizar conversación y proponer pedido
+          </Button>
         </div>
       )}
 
