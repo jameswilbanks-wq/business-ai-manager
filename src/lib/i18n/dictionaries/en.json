@@ -94,7 +94,10 @@
       "update_password_failed": "We couldn't update your password. Please try again.",
       "unexpected": "Something went wrong. Please try again.",
       "invalid_business_name": "Enter a valid business name.",
-      "business_creation_failed": "We couldn't create your business. Please try again."
+      "business_creation_failed": "We couldn't create your business. Please try again.",
+      "invalid_business_profile": "Please check the business details.",
+      "update_failed": "Couldn't save. Check that you have administrator permissions.",
+      "invalid_currency": "Use a 3-letter currency code (e.g. COP)."
     },
     "show_password": "Show password",
     "hide_password": "Hide password"
